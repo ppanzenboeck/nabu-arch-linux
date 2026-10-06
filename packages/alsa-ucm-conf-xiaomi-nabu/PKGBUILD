@@ -1,0 +1,30 @@
+# Maintainer: Panz Dev <panz.development@gmail.com>
+pkgname=alsa-ucm-conf-xiaomi-nabu
+pkgver=1
+pkgrel=1
+pkgdesc="ALSA Use Case Manager (UCM2) configuration for Xiaomi Pad 5 (nabu)"
+arch=('any')
+url="https://github.com/pocketblue/pocketblue"
+license=('MIT')
+depends=('alsa-ucm-conf')
+source=(
+  "sm8150.conf"
+  "HiFi.conf"
+  "89-xiaomi_nabu.conf"
+  "nabu.pa"
+)
+sha256sums=(
+  'SKIP'
+  'SKIP'
+  'SKIP'
+  'SKIP'
+)
+
+package() {
+  cd "${srcdir}"
+
+  install -Dm644 sm8150.conf "${pkgdir}/usr/share/alsa/ucm2/conf.d/sm8150/sm8150.conf"
+  install -Dm644 HiFi.conf "${pkgdir}/usr/share/alsa/ucm2/Xiaomi/nabu/HiFi.conf"
+  install -Dm644 89-xiaomi_nabu.conf "${pkgdir}/etc/pulse/daemon.conf.d/89-xiaomi_nabu.conf"
+  install -Dm644 nabu.pa "${pkgdir}/etc/pulse/default.pa.d/nabu.pa"
+}

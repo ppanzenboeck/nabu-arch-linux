@@ -6,3 +6,6 @@ pkg/
 *.log
 *.orig
 *.rej
+repo/
+packages/linux-nabu/linux/
+*.tar.gz

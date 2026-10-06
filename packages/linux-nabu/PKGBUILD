@@ -43,7 +43,7 @@ package() {
   cd linux
 
   # Install modules
-  make ARCH=arm64 INSTALL_MOD_PATH="${pkgdir}/usr" INSTALL_MOD_STRIP=1 modules_install
+  make ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- INSTALL_MOD_PATH="${pkgdir}/usr" INSTALL_MOD_STRIP=1 modules_install
 
   # Remove build and source symlinks pointing to build host paths
   rm -rf "${pkgdir}"/usr/lib/modules/*/build

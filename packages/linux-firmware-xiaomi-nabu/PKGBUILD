@@ -1,0 +1,55 @@
+# Maintainer: Panz Dev <panz.development@gmail.com>
+pkgname=linux-firmware-xiaomi-nabu
+pkgver=20250416
+pkgrel=1
+pkgdesc="Proprietary hardware firmware blobs for Xiaomi Pad 5 (nabu), including calibrated WCN3990 Wi-Fi BDF"
+arch=('any')
+url="https://gitlab.postmarketos.org/panpanpanpan/nabu-firmware"
+license=('custom:proprietary')
+provides=('linux-firmware-xiaomi-nabu')
+options=(!strip !debug)
+install=linux-firmware-xiaomi-nabu.install
+source=(
+  "nabu-firmware-${pkgver}.tar.gz::https://gitlab.postmarketos.org/panpanpanpan/nabu-firmware/-/archive/${pkgver}/nabu-firmware-${pkgver}.tar.gz"
+  "ath10k.conf"
+)
+sha256sums=(
+  'SKIP'
+  'SKIP'
+)
+
+package() {
+  cd "${srcdir}/nabu-firmware-${pkgver}"
+
+  local fmdir="${pkgdir}/usr/lib/firmware"
+
+  # 1. Qualcomm SM8150 Nabu DSP Firmware
+  install -d "${fmdir}/qcom/sm8150/xiaomi/nabu"
+  install -m644 a640_zap.mbn adsp.mbn cdsp.mbn modem.mbn modemuw.jsn slpi_nb.mbn venus.mbn wlanmdsp.mbn "${fmdir}/qcom/sm8150/xiaomi/nabu/"
+
+  # 2. Qualcomm GPU GMU & SQE Firmware
+  install -d "${fmdir}/qcom"
+  install -m644 a640_gmu.bin a630_sqe.fw "${fmdir}/qcom/"
+
+  # 3. WCN3990 Matched Wi-Fi BDF & Firmware (resolves ~15 Mbps cap)
+  install -d "${fmdir}/ath10k/WCN3990/hw1.0"
+  install -m644 board-2.bin "${fmdir}/ath10k/WCN3990/hw1.0/board-2.bin"
+  install -m644 firmware-5.bin "${fmdir}/ath10k/WCN3990/hw1.0/firmware-5.bin"
+  install -m644 wlanmdsp.mbn "${fmdir}/ath10k/WCN3990/hw1.0/wlanmdsp.mbn"
+
+  # 4. Bluetooth WCN3990 Firmware
+  install -d "${fmdir}/qca"
+  install -m644 crbtfw32.tlv crnv32.bin "${fmdir}/qca/"
+  install -m644 crbtfw32.tlv crnv32.bin "${fmdir}/"
+
+  # 5. Novatek Touchscreen Firmware
+  install -d "${fmdir}/novatek"
+  install -m644 novatek_nt36523_fw.bin "${fmdir}/novatek/"
+
+  # 6. Cirrus Logic CS35L41 SmartAmp Speaker Protection Firmware
+  install -d "${fmdir}/cirrus"
+  install -m644 *-cs35l41-* "${fmdir}/cirrus/"
+
+  # 7. Ath10k modprobe options (hardware crypto & native 802.11 frames)
+  install -Dm644 "${srcdir}/ath10k.conf" "${pkgdir}/etc/modprobe.d/ath10k.conf"
+}
