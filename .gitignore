@@ -1,0 +1,8 @@
+# Arch package build directories and artifacts
+src/
+pkg/
+*.pkg.tar.zst
+*.pkg.tar.xz
+*.log
+*.orig
+*.rej

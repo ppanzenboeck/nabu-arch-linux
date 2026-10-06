@@ -1,0 +1,58 @@
+# Maintainer: Panz Dev <panz.development@gmail.com>
+pkgname=linux-nabu
+pkgver=6.16.0
+pkgrel=1
+pkgdesc="Linux mainline kernel for Xiaomi Pad 5 (SM8150)"
+arch=('aarch64')
+url="https://gitlab.postmarketos.org/soc/qualcomm-sm8150/linux"
+license=('GPL-2.0-only')
+depends=(
+  'coreutils'
+  'initramfs'
+  'kmod'
+)
+optdepends=(
+  'linux-firmware-xiaomi-nabu: proprietary firmware blobs for Xiaomi Pad 5'
+  'wireless-regdb: regulatory domain database'
+)
+provides=('WIREGUARD-MODULE')
+options=(!strip !debug)
+source=(
+  "linux::git+https://gitlab.postmarketos.org/soc/qualcomm-sm8150/linux.git#branch=sm8150/6.16"
+  "config"
+  "linux-nabu.preset"
+)
+sha256sums=(
+  'SKIP'
+  'SKIP'
+  'SKIP'
+)
+
+prepare() {
+  cd linux
+  cp "${srcdir}/config" .config
+  make ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- olddefconfig
+}
+
+build() {
+  cd linux
+  make -j$(nproc) ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- Image dtbs modules
+}
+
+package() {
+  cd linux
+
+  # Install modules
+  make ARCH=arm64 INSTALL_MOD_PATH="${pkgdir}/usr" INSTALL_MOD_STRIP=1 modules_install
+
+  # Remove build and source symlinks pointing to build host paths
+  rm -rf "${pkgdir}"/usr/lib/modules/*/build
+  rm -rf "${pkgdir}"/usr/lib/modules/*/source
+
+  # Install kernel image and Device Tree Blob (DTB)
+  install -Dm644 arch/arm64/boot/Image "${pkgdir}/boot/vmlinuz-linux-nabu"
+  install -Dm644 arch/arm64/boot/dts/qcom/sm8150-xiaomi-nabu.dtb "${pkgdir}/boot/dtb-linux-nabu"
+
+  # Install mkinitcpio preset
+  install -Dm644 "${srcdir}/linux-nabu.preset" "${pkgdir}/etc/mkinitcpio.d/linux-nabu.preset"
+}
