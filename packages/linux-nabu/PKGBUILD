@@ -1,10 +1,10 @@
 # Maintainer: Panz Dev <panz.development@gmail.com>
 pkgname=linux-nabu
-pkgver=6.16.0
-pkgrel=3
-pkgdesc="Linux mainline kernel for Xiaomi Pad 5 (SM8150)"
+pkgver=6.18.55
+pkgrel=1
+pkgdesc="Linux mainline kernel 6.18 for Xiaomi Pad 5 (nabu, SM8150)"
 arch=('aarch64')
-url="https://gitlab.postmarketos.org/soc/qualcomm-sm8150/linux"
+url="https://github.com/Kumar-Jy/linux-nabu"
 license=('GPL-2.0-only')
 depends=(
   'coreutils'
@@ -18,7 +18,7 @@ optdepends=(
 provides=('WIREGUARD-MODULE')
 options=(!strip !debug)
 source=(
-  "linux::git+https://gitlab.postmarketos.org/soc/qualcomm-sm8150/linux.git#branch=sm8150/6.16"
+  "linux::git+https://github.com/Kumar-Jy/linux-nabu.git#branch=6.18-test"
   "config"
   "linux-nabu.preset"
 )
