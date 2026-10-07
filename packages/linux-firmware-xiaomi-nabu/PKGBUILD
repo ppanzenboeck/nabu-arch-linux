@@ -1,7 +1,7 @@
 # Maintainer: Panz Dev <panz.development@gmail.com>
 pkgname=linux-firmware-xiaomi-nabu
 pkgver=20250416
-pkgrel=1
+pkgrel=2
 pkgdesc="Proprietary hardware firmware blobs for Xiaomi Pad 5 (nabu), including calibrated WCN3990 Wi-Fi BDF"
 arch=('any')
 url="https://gitlab.postmarketos.org/panpanpanpan/nabu-firmware"
@@ -11,10 +11,8 @@ options=(!strip !debug)
 install=linux-firmware-xiaomi-nabu.install
 source=(
   "nabu-firmware-${pkgver}.tar.gz::https://gitlab.postmarketos.org/panpanpanpan/nabu-firmware/-/archive/${pkgver}/nabu-firmware-${pkgver}.tar.gz"
-  "ath10k.conf"
 )
 sha256sums=(
-  'SKIP'
   'SKIP'
 )
 
@@ -49,7 +47,4 @@ package() {
   # 6. Cirrus Logic CS35L41 SmartAmp Speaker Protection Firmware
   install -d "${fmdir}/cirrus"
   install -m644 *-cs35l41-* "${fmdir}/cirrus/"
-
-  # 7. Ath10k modprobe options (hardware crypto & native 802.11 frames)
-  install -Dm644 "${srcdir}/ath10k.conf" "${pkgdir}/etc/modprobe.d/ath10k.conf"
 }

@@ -1,7 +1,7 @@
 # Maintainer: Panz Dev <panz.development@gmail.com>
 pkgname=linux-nabu
 pkgver=6.16.0
-pkgrel=2
+pkgrel=3
 pkgdesc="Linux mainline kernel for Xiaomi Pad 5 (SM8150)"
 arch=('aarch64')
 url="https://gitlab.postmarketos.org/soc/qualcomm-sm8150/linux"
