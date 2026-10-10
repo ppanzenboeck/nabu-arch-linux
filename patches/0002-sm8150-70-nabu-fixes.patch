@@ -1,8 +1,22 @@
 diff --git a/arch/arm64/boot/dts/qcom/sm8150.dtsi b/arch/arm64/boot/dts/qcom/sm8150.dtsi
-index 079e2f0a6..69b4669e3 100644
+index 079e2f0a6..b1234a5c6 100644
 --- a/arch/arm64/boot/dts/qcom/sm8150.dtsi
 +++ b/arch/arm64/boot/dts/qcom/sm8150.dtsi
-@@ -3870,7 +3870,7 @@ mdss: display-subsystem@ae00000 {
+@@ -2653,6 +2653,13 @@ qup_i2c13_default: qup-i2c13-default-state {
+ 				bias-disable;
+ 			};
+ 
++			qup_uart13_default: qup-uart13-default-state {
++				pins = "gpio43", "gpio44", "gpio45", "gpio46";
++				function = "qup13";
++				drive-strength = <2>;
++				bias-disable;
++			};
++
+ 			qup_spi13_default: qup-spi13-default-state {
+ 				pins = "gpio43", "gpio44", "gpio45", "gpio46";
+ 				function = "qup13";
+@@ -3870,7 +3877,7 @@ mdss: display-subsystem@ae00000 {
  
  			iommus = <&apps_smmu 0x800 0x420>;
  
@@ -11,6 +25,18 @@ index 079e2f0a6..69b4669e3 100644
  
  			status = "disabled";
  
+diff --git a/arch/arm64/boot/dts/qcom/sm8150-xiaomi-nabu.dts b/arch/arm64/boot/dts/qcom/sm8150-xiaomi-nabu.dts
+index e5a34e8f1..b9123c4a2 100644
+--- a/arch/arm64/boot/dts/qcom/sm8150-xiaomi-nabu.dts
++++ b/arch/arm64/boot/dts/qcom/sm8150-xiaomi-nabu.dts
+@@ -1067,6 +1067,7 @@ &uart13 {
+ 				<&tlmm 46 IRQ_TYPE_EDGE_FALLING>;
+ 
+ 	pinctrl-names = "default", "sleep";
++	pinctrl-0 = <&qup_uart13_default>;
+ 	pinctrl-1 = <&qup_uart13_sleep>;
+ 
+ 	bluetooth: bluetooth {
 diff --git a/drivers/clk/qcom/dispcc-sm8250.c b/drivers/clk/qcom/dispcc-sm8250.c
 index 8f433e1e7..67cd57a34 100644
 --- a/drivers/clk/qcom/dispcc-sm8250.c
@@ -316,16 +342,3 @@ index 01182442d..4fa1f351b 100644
  	.quirks = DSI_PHY_7NM_QUIRK_V7_2,
  };
 +
-
-diff --git a/arch/arm64/boot/dts/qcom/sm8150-xiaomi-nabu.dts b/arch/arm64/boot/dts/qcom/sm8150-xiaomi-nabu.dts
-index e5a34e8f1..b9123c4a2 100644
---- a/arch/arm64/boot/dts/qcom/sm8150-xiaomi-nabu.dts
-+++ b/arch/arm64/boot/dts/qcom/sm8150-xiaomi-nabu.dts
-@@ -1067,6 +1067,7 @@ &uart13 {
- 				<&tlmm 46 IRQ_TYPE_EDGE_FALLING>;
- 
- 	pinctrl-names = "default", "sleep";
-+	pinctrl-0 = <&qup_uart13_default>;
- 	pinctrl-1 = <&qup_uart13_sleep>;
- 
- 	bluetooth: bluetooth {
