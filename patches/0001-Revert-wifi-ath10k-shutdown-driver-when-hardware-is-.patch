@@ -1,0 +1,178 @@
+From c22201bb8db6ac23ba497df2d1709b9888b13bab Mon Sep 17 00:00:00 2001
+From: Nicola Guerrera <guerrera.nicola@gmail.com>
+Date: Mon, 27 Oct 2025 16:58:11 +0100
+Subject: [PATCH] Revert "wifi: ath10k: shutdown driver when hardware is
+ unreliable"
+
+This reverts commit c256a94d1b1b15109740306f7f2a7c2173e12072.
+---
+ drivers/net/wireless/ath/ath10k/core.c | 48 +++-----------------------
+ drivers/net/wireless/ath/ath10k/core.h | 11 ++----
+ drivers/net/wireless/ath/ath10k/mac.c  |  7 +---
+ drivers/net/wireless/ath/ath10k/wmi.c  |  6 ----
+ 4 files changed, 9 insertions(+), 63 deletions(-)
+
+diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
+index 6f78f1752..8fa1746c0 100644
+--- a/drivers/net/wireless/ath/ath10k/core.c
++++ b/drivers/net/wireless/ath/ath10k/core.c
+@@ -2493,50 +2493,12 @@ static int ath10k_init_hw_params(struct ath10k *ar)
+ 	return 0;
+ }
+ 
+-static bool ath10k_core_needs_recovery(struct ath10k *ar)
+-{
+-	long time_left;
+-
+-	/* Sometimes the recovery will fail and then the next all recovery fail,
+-	 * so avoid infinite recovery.
+-	 */
+-	if (atomic_read(&ar->fail_cont_count) >= ATH10K_RECOVERY_MAX_FAIL_COUNT) {
+-		ath10k_err(ar, "consecutive fail %d times, will shutdown driver!",
+-			   atomic_read(&ar->fail_cont_count));
+-		ar->state = ATH10K_STATE_WEDGED;
+-		return false;
+-	}
+-
+-	ath10k_dbg(ar, ATH10K_DBG_BOOT, "total recovery count: %d", ++ar->recovery_count);
+-
+-	if (atomic_read(&ar->pending_recovery)) {
+-		/* Sometimes it happened another recovery work before the previous one
+-		 * completed, then the second recovery work will destroy the previous
+-		 * one, thus below is to avoid that.
+-		 */
+-		time_left = wait_for_completion_timeout(&ar->driver_recovery,
+-							ATH10K_RECOVERY_TIMEOUT_HZ);
+-		if (time_left) {
+-			ath10k_warn(ar, "previous recovery succeeded, skip this!\n");
+-			return false;
+-		}
+-
+-		/* Record the continuous recovery fail count when recovery failed. */
+-		atomic_inc(&ar->fail_cont_count);
+-
+-		/* Avoid having multiple recoveries at the same time. */
+-		return false;
+-	}
+-
+-	atomic_inc(&ar->pending_recovery);
+-
+-	return true;
+-}
+-
+ void ath10k_core_start_recovery(struct ath10k *ar)
+ {
+-	if (!ath10k_core_needs_recovery(ar))
++	if (test_and_set_bit(ATH10K_FLAG_RESTARTING, &ar->dev_flags)) {
++		ath10k_warn(ar, "already restarting\n");
+ 		return;
++	}
+ 
+ 	queue_work(ar->workqueue, &ar->restart_work);
+ }
+@@ -2572,8 +2534,6 @@ static void ath10k_core_restart(struct work_struct *work)
+ 	struct ath10k *ar = container_of(work, struct ath10k, restart_work);
+ 	int ret;
+ 
+-	reinit_completion(&ar->driver_recovery);
+-
+ 	set_bit(ATH10K_FLAG_CRASH_FLUSH, &ar->dev_flags);
+ 
+ 	/* Place a barrier to make sure the compiler doesn't reorder
+@@ -2638,6 +2598,8 @@ static void ath10k_core_restart(struct work_struct *work)
+ 	if (ret)
+ 		ath10k_warn(ar, "failed to send firmware crash dump via devcoredump: %d",
+ 			    ret);
++
++	complete(&ar->driver_recovery);
+ }
+ 
+ static void ath10k_core_set_coverage_class_work(struct work_struct *work)
+diff --git a/drivers/net/wireless/ath/ath10k/core.h b/drivers/net/wireless/ath/ath10k/core.h
+index 8c72ed386..5fab10f55 100644
+--- a/drivers/net/wireless/ath/ath10k/core.h
++++ b/drivers/net/wireless/ath/ath10k/core.h
+@@ -4,7 +4,6 @@
+  * Copyright (c) 2011-2017 Qualcomm Atheros, Inc.
+  * Copyright (c) 2018-2019, The Linux Foundation. All rights reserved.
+  * Copyright (c) 2022 Qualcomm Innovation Center, Inc. All rights reserved.
+- * Copyright (c) Qualcomm Technologies, Inc. and/or its subsidiaries.
+  */
+ 
+ #ifndef _CORE_H_
+@@ -88,8 +87,6 @@
+ 				  IEEE80211_IFACE_SKIP_SDATA_NOT_IN_DRIVER)
+ #define ATH10K_ITER_RESUME_FLAGS (IEEE80211_IFACE_ITER_RESUME_ALL |\
+ 				  IEEE80211_IFACE_SKIP_SDATA_NOT_IN_DRIVER)
+-#define ATH10K_RECOVERY_TIMEOUT_HZ			(5 * HZ)
+-#define ATH10K_RECOVERY_MAX_FAIL_COUNT			4
+ 
+ struct ath10k;
+ 
+@@ -868,6 +865,9 @@ enum ath10k_dev_flags {
+ 	/* Per Station statistics service */
+ 	ATH10K_FLAG_PEER_STATS,
+ 
++	/* Indicates that ath10k device is during recovery process and not complete */
++	ATH10K_FLAG_RESTARTING,
++
+ 	/* protected by conf_mutex */
+ 	ATH10K_FLAG_NAPI_ENABLED,
+ };
+@@ -1211,11 +1211,6 @@ struct ath10k {
+ 	struct work_struct bundle_tx_work;
+ 	struct work_struct tx_complete_work;
+ 
+-	atomic_t pending_recovery;
+-	unsigned int recovery_count;
+-	/* continuous recovery fail count */
+-	atomic_t fail_cont_count;
+-
+ 	/* cycle count is reported twice for each visited channel during scan.
+ 	 * access protected by data_lock
+ 	 */
+diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
+index 24dd794e3..2769d2d5a 100644
+--- a/drivers/net/wireless/ath/ath10k/mac.c
++++ b/drivers/net/wireless/ath/ath10k/mac.c
+@@ -8162,12 +8162,7 @@ static void ath10k_reconfig_complete(struct ieee80211_hw *hw,
+ 		ath10k_info(ar, "device successfully recovered\n");
+ 		ar->state = ATH10K_STATE_ON;
+ 		ieee80211_wake_queues(ar->hw);
+-
+-		/* Clear recovery state. */
+-		complete(&ar->driver_recovery);
+-		atomic_set(&ar->fail_cont_count, 0);
+-		atomic_set(&ar->pending_recovery, 0);
+-
++		clear_bit(ATH10K_FLAG_RESTARTING, &ar->dev_flags);
+ 		if (ar->hw_params.hw_restart_disconnect) {
+ 			list_for_each_entry(arvif, &ar->arvifs, list) {
+ 				if (arvif->is_up && arvif->vdev_type == WMI_VDEV_TYPE_STA)
+diff --git a/drivers/net/wireless/ath/ath10k/wmi.c b/drivers/net/wireless/ath/ath10k/wmi.c
+index cb8ae751e..df6a24f8f 100644
+--- a/drivers/net/wireless/ath/ath10k/wmi.c
++++ b/drivers/net/wireless/ath/ath10k/wmi.c
+@@ -4,7 +4,6 @@
+  * Copyright (c) 2011-2017 Qualcomm Atheros, Inc.
+  * Copyright (c) 2018-2019, The Linux Foundation. All rights reserved.
+  * Copyright (c) 2021-2024 Qualcomm Innovation Center, Inc. All rights reserved.
+- * Copyright (c) Qualcomm Technologies, Inc. and/or its subsidiaries.
+  */
+ 
+ #include <linux/skbuff.h>
+@@ -1942,11 +1941,6 @@ int ath10k_wmi_cmd_send(struct ath10k *ar, struct sk_buff *skb, u32 cmd_id)
+ 	}
+ 
+ 	wait_event_timeout(ar->wmi.tx_credits_wq, ({
+-		if (ar->state == ATH10K_STATE_WEDGED) {
+-			ret = -ESHUTDOWN;
+-			ath10k_dbg(ar, ATH10K_DBG_WMI,
+-				   "drop wmi command %d, hardware is wedged\n", cmd_id);
+-		}
+ 		/* try to send pending beacons first. they take priority */
+ 		ath10k_wmi_tx_beacons_nowait(ar);
+ 
+-- 
+2.56.0
+

@@ -1,0 +1,10 @@
+# mkinitcpio preset file for the 'linux-nabu-70' package
+
+ALL_config="/etc/mkinitcpio.conf"
+ALL_kver="/boot/vmlinuz-linux-nabu-70"
+
+PRESETS=('default')
+
+default_image="/boot/initramfs-linux-nabu-70.img"
+default_uki="/boot/efi/EFI/arch/arch-linux-70-nabu.efi"
+default_options="--splash /usr/share/systemd/bootctl/splash-arch.bmp"
