@@ -1,0 +1,20 @@
+# Maintainer: Panz Dev <panz.development@gmail.com>
+pkgname=nabu-base-settings
+pkgver=1.0
+pkgrel=1
+pkgdesc="Default hardware settings and desktop environment profiles for Xiaomi Pad 5 (nabu)"
+arch=('any')
+url="https://github.com/nabu-renaissance"
+license=('GPL-3.0-or-later')
+source=(
+  '10-nabu-kwin.conf'
+)
+sha256sums=(
+  'SKIP'
+)
+
+package() {
+  # Install system-wide environment drop-in so all user sessions automatically
+  # run KWin under OpenGL ES backend without triggering Adreno 640 CCU faults
+  install -Dm644 "${srcdir}/10-nabu-kwin.conf" "${pkgdir}/usr/lib/environment.d/10-nabu-kwin.conf"
+}
