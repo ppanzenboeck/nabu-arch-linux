@@ -1,20 +1,26 @@
 # Maintainer: Panz Dev <panz.development@gmail.com>
 pkgname=nabu-base-settings
 pkgver=1.0
-pkgrel=1
+pkgrel=2
 pkgdesc="Default hardware settings and desktop environment profiles for Xiaomi Pad 5 (nabu)"
 arch=('any')
 url="https://github.com/nabu-renaissance"
 license=('GPL-3.0-or-later')
 source=(
   '10-nabu-kwin.conf'
+  '10-nabu-powerdevil.conf'
 )
 sha256sums=(
+  'SKIP'
   'SKIP'
 )
 
 package() {
-  # Install system-wide environment drop-in so all user sessions automatically
+  # 1. Install system-wide environment drop-in so all user sessions automatically
   # run KWin under OpenGL ES backend without triggering Adreno 640 CCU faults
   install -Dm644 "${srcdir}/10-nabu-kwin.conf" "${pkgdir}/usr/lib/environment.d/10-nabu-kwin.conf"
+
+  # 2. System-wide default power profile preventing screen sleep / DPMS freeze
+  # on Adreno 640 before upstream DRM MSM fixes land
+  install -Dm644 "${srcdir}/10-nabu-powerdevil.conf" "${pkgdir}/etc/xdg/powerdevilrc"
 }
