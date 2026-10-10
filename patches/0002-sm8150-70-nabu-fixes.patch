@@ -1,3 +1,16 @@
+From: Panz Dev <panz.development@gmail.com>
+Subject: [PATCH] arm64: dts / drm: msm: Xiaomi Pad 5 (nabu) hardware enablement for Linux 7.0
+
+Hardware fixes and device tree enablement for Xiaomi Pad 5 on Linux 7.0:
+- Bluetooth UART pinmux enablement (qup_uart13_default on pins 43-46 & pinctrl-0):
+  Authored by Panz Dev <panz.development@gmail.com>
+- DPU/DSI handover clocks and 7nm PHY PLL routing for sm8150/nabu:
+  Based on display bringup by Kumar-Jy <https://github.com/Kumar-Jy/linux-nabu>
+  and the postmarketOS SM8150 team.
+
+Signed-off-by: Panz Dev <panz.development@gmail.com>
+---
+
 diff --git a/arch/arm64/boot/dts/qcom/sm8150.dtsi b/arch/arm64/boot/dts/qcom/sm8150.dtsi
 index 079e2f0a6..b1234a5c6 100644
 --- a/arch/arm64/boot/dts/qcom/sm8150.dtsi

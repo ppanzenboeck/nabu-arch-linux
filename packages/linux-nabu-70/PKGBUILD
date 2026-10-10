@@ -1,4 +1,7 @@
 # Maintainer: Panz Dev <panz.development@gmail.com>
+# Contributor / Upstream Lineage:
+#   Kumar-Jy <https://github.com/Kumar-Jy/linux-nabu> (Xiaomi Pad 5 mainline kernel integration & display bringup)
+#   postmarketOS SM8150 team <https://gitlab.postmarketos.org/soc/qualcomm-sm8150/linux> (Mainline Linux SM8150 SoC port)
 pkgname=linux-nabu-70
 pkgver=7.0.0
 pkgrel=1

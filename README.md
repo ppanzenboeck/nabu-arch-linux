@@ -74,6 +74,8 @@ dmesg | grep ath10k
 
 ## Credits & Upstream Lineage
 
-- [postmarketOS Qualcomm SM8150 Tree](https://gitlab.postmarketos.org/soc/qualcomm-sm8150/linux)
+- [Kumar-Jy / linux-nabu](https://github.com/Kumar-Jy/linux-nabu) - Xiaomi Pad 5 mainline kernel integration & display bringup
+- [postmarketOS Qualcomm SM8150 Tree](https://gitlab.postmarketos.org/soc/qualcomm-sm8150/linux) - Mainline Linux SM8150 SoC port
 - [Pocketblue Fedora Mobility](https://github.com/pocketblue/pocketblue)
 - [nabu-firmware](https://gitlab.postmarketos.org/panpanpanpan/nabu-firmware)
+
