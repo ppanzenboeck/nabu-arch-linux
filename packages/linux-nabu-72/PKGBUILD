@@ -16,7 +16,7 @@
 
 pkgbase=linux-nabu
 pkgver=7.2.9
-pkgrel=0
+pkgrel=1
 arch=('aarch64')
 url="https://github.com/Kumar-Jy/linux-nabu"
 license=('GPL2')
@@ -35,8 +35,9 @@ sha256sums=('SKIP'
 prepare() {
   cd "${srcdir}/linux-nabu"
 
-  echo "-${pkgrel}" > localversion.10-pkgrel
-  echo "-krjy" > localversion.20-pkgname
+  # Produce clean "7.2.9-nabu" release name
+  echo "-nabu" > localversion.10-pkgname
+  rm -f localversion.10-pkgrel localversion.20-pkgname
 
   local _cross=""
   [ "$(uname -m)" != "aarch64" ] && _cross="CROSS_COMPILE=aarch64-linux-gnu-"
