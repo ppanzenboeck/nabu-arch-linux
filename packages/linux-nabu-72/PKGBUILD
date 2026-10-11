@@ -55,8 +55,8 @@ build() {
   make -s ARCH=arm64 ${_cross} kernelrelease > version
 
   unset LDFLAGS
-  make ${MAKEFLAGS} ARCH=arm64 ${_cross} Image Image.gz modules
-  make ${MAKEFLAGS} ARCH=arm64 ${_cross} DTC_FLAGS="-@" dtbs
+  make -j$(nproc) ARCH=arm64 ${_cross} Image Image.gz modules
+  make -j$(nproc) ARCH=arm64 ${_cross} DTC_FLAGS="-@" dtbs
 }
 
 _package_common() {

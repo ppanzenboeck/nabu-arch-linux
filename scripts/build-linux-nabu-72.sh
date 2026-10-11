@@ -10,9 +10,11 @@ set -euo pipefail
 
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 PKG_DIR="${ROOT_DIR}/packages/linux-nabu-72"
+NUM_JOBS="$(nproc)"
 
 echo "======================================================================"
 echo "  Building Linux 7.2.9 for Xiaomi Pad 5 (nabu)"
+echo "  Using ${NUM_JOBS} parallel threads (-j${NUM_JOBS})"
 echo "  Upstream tree: https://github.com/Kumar-Jy/linux-nabu (branch 7.2)"
 echo "======================================================================"
 
@@ -26,7 +28,8 @@ done
 
 cd "${PKG_DIR}"
 
-echo "Starting package build..."
+echo "Starting package build with MAKEFLAGS=\"-j${NUM_JOBS}\"..."
+export MAKEFLAGS="-j${NUM_JOBS}"
 CARCH=aarch64 makepkg -s -f -d --skipinteg "$@"
 
 echo "Package build complete!"
