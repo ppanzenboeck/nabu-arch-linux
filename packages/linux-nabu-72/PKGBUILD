@@ -38,19 +38,25 @@ prepare() {
   echo "-${pkgrel}" > localversion.10-pkgrel
   echo "-krjy" > localversion.20-pkgname
 
-  make ARCH=arm64 nabu_defconfig
+  local _cross=""
+  [ "$(uname -m)" != "aarch64" ] && _cross="CROSS_COMPILE=aarch64-linux-gnu-"
+
+  make ARCH=arm64 ${_cross} nabu_defconfig
 }
 
 build() {
   cd "${srcdir}/linux-nabu"
 
+  local _cross=""
+  [ "$(uname -m)" != "aarch64" ] && _cross="CROSS_COMPILE=aarch64-linux-gnu-"
+
   export GIT_DIR=/dev/null
-  make ARCH=arm64 prepare
-  make -s ARCH=arm64 kernelrelease > version
+  make ARCH=arm64 ${_cross} prepare
+  make -s ARCH=arm64 ${_cross} kernelrelease > version
 
   unset LDFLAGS
-  make ${MAKEFLAGS} ARCH=arm64 Image Image.gz modules
-  make ${MAKEFLAGS} ARCH=arm64 DTC_FLAGS="-@" dtbs
+  make ${MAKEFLAGS} ARCH=arm64 ${_cross} Image Image.gz modules
+  make ${MAKEFLAGS} ARCH=arm64 ${_cross} DTC_FLAGS="-@" dtbs
 }
 
 _package_common() {
@@ -64,7 +70,9 @@ _package_common() {
   ln -s "dtb-${kernver}" "${pkgdir}/boot/dtb-linux-nabu"
 
   echo "Installing modules..."
-  make INSTALL_MOD_PATH="$pkgdir/usr" INSTALL_MOD_STRIP=1 DEPMOD=/doesntexist modules_install
+  local _cross=""
+  [ "$(uname -m)" != "aarch64" ] && _cross="CROSS_COMPILE=aarch64-linux-gnu-"
+  make ARCH=arm64 ${_cross} INSTALL_MOD_PATH="$pkgdir/usr" INSTALL_MOD_STRIP=1 DEPMOD=/doesntexist modules_install
 
   rm "$pkgdir/usr/lib/modules/$kernver/build"
 
