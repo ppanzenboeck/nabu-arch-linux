@@ -15,7 +15,7 @@
 #   - Default config: arch/arm64/configs/nabu_defconfig
 
 pkgbase=linux-nabu
-pkgver=7.2.9
+pkgver=7.2.10
 pkgrel=1
 arch=('aarch64')
 url="https://github.com/Kumar-Jy/linux-nabu"
@@ -35,7 +35,7 @@ sha256sums=('SKIP'
 prepare() {
   cd "${srcdir}/linux-nabu"
 
-  # Produce clean "7.2.9-nabu" release name
+  # Produce clean "7.2.10-nabu" release name
   echo "-nabu" > localversion.10-pkgname
   rm -f localversion.10-pkgrel localversion.20-pkgname
 

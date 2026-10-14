@@ -4,7 +4,7 @@ Arch Linux ARM package repository and mainline kernel recipes for the **Xiaomi P
 
 ## Repository Contents
 
-- **`packages/linux-nabu-72`**: Mainline Linux 7.2.9 kernel package by Kumar-Jy (`github.com/Kumar-Jy/linux-nabu#7.2`) with full nabu hardware support (Camera, Iris VPU, SLPI FastRPC, Audio I2S, SMB5 charger, stylus, touch, keyboard).
+- **`packages/linux-nabu-72`**: Mainline Linux 7.2.10 kernel package by Kumar-Jy (`github.com/Kumar-Jy/linux-nabu#7.2`) with full nabu hardware support (Camera, Iris VPU, SLPI FastRPC, Audio I2S, SMB5 charger, stylus, touch, keyboard).
 - **`packages/linux-nabu-70`**: Mainline Linux 7.0 kernel package tracking postmarketOS with Bluetooth UART pinmux fixes.
 - **`packages/linux-nabu`**: Mainline Linux 6.18.55 fallback kernel package.
 - **`packages/nabu-base-settings`**: Hardware profiles and environment configurations for KDE Wayland on Adreno 640 (GLES compositor backend + DPMS idle safeguards).
