@@ -4,20 +4,23 @@ Arch Linux ARM package repository and mainline kernel recipes for the **Xiaomi P
 
 ## Repository Contents
 
-- **`packages/linux-nabu-72`**: Mainline Linux 7.2.10 kernel package by Kumar-Jy (`github.com/Kumar-Jy/linux-nabu#7.2`) with full nabu hardware support (Camera, Iris VPU, SLPI FastRPC, Audio I2S, SMB5 charger, stylus, touch, keyboard).
+- **`packages/linux-nabu-72`**: Mainline Linux 7.2.10 kernel package tracking Kumar-Jy's port (`github.com/Kumar-Jy/linux-nabu#7.2-test`) with full nabu hardware support (Camera, Iris VPU, SLPI FastRPC, Audio I2S, SMB5 charger, stylus, touch, keyboard, and Bluetooth sleep/resume fix).
 - **`packages/linux-nabu-70`**: Mainline Linux 7.0 kernel package tracking postmarketOS with Bluetooth UART pinmux fixes.
 - **`packages/linux-nabu`**: Mainline Linux 6.18.55 fallback kernel package.
 - **`packages/nabu-base-settings`**: Hardware profiles and environment configurations for KDE Wayland on Adreno 640 (GLES compositor backend + DPMS idle safeguards).
 - **`packages/linux-firmware-xiaomi-nabu`**: Proprietary DSP and peripheral firmware blobs, including the calibrated WCN3990 Wi-Fi Board Data File (BDF) to resolve the ~15 Mbps throughput cap.
 - **`packages/alsa-ucm-conf-xiaomi-nabu`**: ALSA Use Case Manager (UCM2) configuration profiles for Cirrus CS35L41 quad-speakers and WCD9341 microphones.
-- **`scripts`**: Repository creation (`create-repo.sh`) and maintenance utilities.
+- **`scripts`**: Automated kernel build script (`build-linux-nabu-72.sh`), repository creation (`create-repo.sh`), and maintenance utilities.
 
 ## Building the Kernel & Packages
 
 On an Arch Linux x86_64 host with cross-compilation tools installed (`aarch64-linux-gnu-gcc`, `aarch64-linux-gnu-binutils`):
 
 ```bash
-# Build kernel
+# Build Linux 7.2.10 kernel package (parallelized across all CPU cores):
+./scripts/build-linux-nabu-72.sh
+
+# Or build the 6.18 fallback kernel:
 cd packages/linux-nabu
 CARCH=aarch64 makepkg --holdver -d --skipinteg
 

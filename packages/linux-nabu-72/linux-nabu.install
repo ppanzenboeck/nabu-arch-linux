@@ -87,13 +87,15 @@ pre_upgrade() {
 
 show_changelog() {
     echo -e "\n\e[1;34m::\e[0m \e[1mlinux-nabu ($1) changelog highlights:\e[0m"
-    echo "   * Kernel: Linux 7.2.9, sm8150 baseline"
+    echo "   * Kernel: Linux 7.2.10, sm8150 baseline (7.2.10-nabu)"
+    echo "   * Bluetooth: Suspend/resume fix (GENI IRQ sleep masking + serial forced PM)"
+    echo "   * Suspend: Fix auto-wakeup (LN8000 IRQ and RTC-EFI), keyboard MCU probe bringup"
+    echo "   * Power: SMB5 USB-PD charger, Renesas IDTP9418 stylus wireless charging fixes"
     echo "   * Display: DSI PLL lock fix on boot, PHY runtime resume, PLL bias protection"
     echo "   * UFS: DT frequency table + reset quirk for Samsung UFS"
     echo "   * FastRPC SLPI: high-IOVA alias mapping + sensor PDR registration"
     echo "   * Camera & Video: OV13B10/OV8856/CN3927, Iris VPU hardware video decode"
     echo "   * Audio: SM8150 machine driver, 24-bit mic capture, CS35L41 speaker routing"
-    echo "   * Power: SMB5 USB-PD charger, Renesas IDTP9418 stylus wireless charging"
     echo "   * Input: Novatek NT36523 touchscreen, Xiaomi keyboard & cover lid notifier"
     echo ""
 }

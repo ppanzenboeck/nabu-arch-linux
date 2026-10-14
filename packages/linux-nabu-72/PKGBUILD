@@ -1,6 +1,6 @@
 # Maintainer: Kumar-Jy
 # Unified kernel repository for Xiaomi Pad 5 (nabu):
-#   https://github.com/Kumar-Jy/linux-nabu (branch 7.2)
+#   https://github.com/Kumar-Jy/linux-nabu (branch 7.2-test)
 # Full hardware support built-in:
 #   - Camera (OV13B10 rear + OV8856 front + CN3927 AF)
 #   - Iris hardware video decoder
