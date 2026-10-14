@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 # ==============================================================================
 # build-linux-nabu-72.sh
-# Automated build script for Linux 7.2.9 on Xiaomi Pad 5 (nabu)
+# Automated build script for Linux 7.2.10 on Xiaomi Pad 5 (nabu)
 # Author: Panz Dev <panz.development@gmail.com>
-# Upstream Linux 7.2 port: Kumar-Jy <https://github.com/Kumar-Jy/linux-nabu#7.2>
+# Upstream Linux 7.2 port: Kumar-Jy <https://github.com/Kumar-Jy/linux-nabu#7.2-test>
 # ==============================================================================
 
 set -euo pipefail
@@ -13,9 +13,9 @@ PKG_DIR="${ROOT_DIR}/packages/linux-nabu-72"
 NUM_JOBS="$(nproc)"
 
 echo "======================================================================"
-echo "  Building Linux 7.2.9 for Xiaomi Pad 5 (nabu)"
+echo "  Building Linux 7.2.10 for Xiaomi Pad 5 (nabu)"
 echo "  Using ${NUM_JOBS} parallel threads (-j${NUM_JOBS})"
-echo "  Upstream tree: https://github.com/Kumar-Jy/linux-nabu (branch 7.2)"
+echo "  Upstream tree: https://github.com/Kumar-Jy/linux-nabu (branch 7.2-test)"
 echo "======================================================================"
 
 # Verify required tools

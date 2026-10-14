@@ -1,6 +1,12 @@
-2026-10-14 Kumar-Jy <20044626+Kumar-Jy@users.noreply.github.com>
-	* 7.2.10-0:
-	- Bump to Linux 7.2.10 upstream stable
+2026-10-14 Panz Dev <panz@nabu>
+	* 7.2.10-1:
+	- Bump to Linux 7.2.10 (branch 7.2-test)
+	- Fix BT dying after suspend (GENI IRQ sleep masking and serial forced PM)
+	- Fix auto-wakeup on suspend (LN8000 IRQ and RTC-EFI)
+	- Xiaomi keyboard MCU bringup at probe (fixes s2idle abort)
+	- Wire PM8150B VBUS reg to Type-C connector (USB-C host support)
+	- Fix IDTP9418 pen detection, detach and pinconf
+	- Clean localversion naming (-nabu)
 
 2026-10-10 Kumar-Jy <20044626+Kumar-Jy@users.noreply.github.com>
 	* 7.2.9-0:

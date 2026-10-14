@@ -9,6 +9,7 @@ pkg/
 repo/
 packages/linux-nabu/linux/
 packages/linux-nabu-70/linux/
+packages/linux-nabu-72/linux-nabu/
 *.tar.gz
 
 # Misc diagnostics, scratch files and local artifacts
